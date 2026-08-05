@@ -74,7 +74,6 @@ public class MadGui
 
 	/**
 	 * Creates a new instance of MadGui from an existing Inventory.
-	 * todo(l.85): Try to get the inventory's title.
 	 *
 	 * @param	inventory	Inventory
 	 * @param 	areItemsLockedIn	Are items present in the gui locked inside the inventory?
@@ -223,14 +222,13 @@ public class MadGui
 	}
 
 	/**
-	 * Replaces every item of a certain name by another item.
-	 * fixme: You may want to perform further checks, not only the name.
+	 * Replaces every item of a certain action ID by another item.
 	 *
-	 * @param	toReplace		Name of the item to replace
+	 * @param	toReplaceId		Action ID of the item to replace
 	 * @param	toReplaceWith	Replacing item
 	 * @return	Itself
 	 */
-	public MadGui replaceAll(Component toReplace, MadItem toReplaceWith)
+	public MadGui replaceAll(String toReplaceId, MadItem toReplaceWith)
 	{
 		for (int k = 0; k < this.getTotalSize(); k++) {
 			final ItemStack item = this.gui.getItem(k);
@@ -239,8 +237,17 @@ public class MadGui
 				continue;
 			}
 
-			if (Objects.equals(item.getItemMeta().displayName(), toReplace)) {
-				this.gui.setItem(k, toReplaceWith.getItemStack());
+			final String actionId = MadItem.getActionId(item);
+
+			if (!Objects.equals(actionId, toReplaceId)) {
+				continue;
+			}
+
+			this.gui.setItem(k, toReplaceWith.getItemStack());
+
+			if (toReplaceWith.getClickHandlers() != null && !toReplaceWith.getClickHandlers().isEmpty()) {
+				final ClickHandler handler = toReplaceWith.getClickHandlers().getFirst();
+				this.slotActions.put(k, handler);
 			}
 		}
 

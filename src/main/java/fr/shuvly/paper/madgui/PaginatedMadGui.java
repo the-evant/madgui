@@ -74,8 +74,6 @@ public class PaginatedMadGui
 
     /**
      * Sets the item as the previous page button.
-     * fixme: In the click action, if gui is not an instance of
-     *        PaginatedMadGui, we may want to throw an error.
      *
      * @param   item        Item
      * @return  Itself
@@ -87,7 +85,7 @@ public class PaginatedMadGui
                 .addAllClickTypes()
                 .setClickAction((Player player, MadGui gui, ItemStack i, int slot) -> {
                     if (!(gui instanceof PaginatedMadGui paginatedGui)) {
-                        return;
+                        throw new IllegalStateException("GUI must be a PaginatedMadGui to use this item.");
                     }
 
                     final int pageIndex = paginatedGui.getCurrentPageIndex() - 1;
@@ -106,8 +104,6 @@ public class PaginatedMadGui
 
     /**
      * Sets the item as the next page button.
-     * fixme: In the click action, if gui is not an instance of
-     *        PaginatedMadGui, we may want to throw an error.
      *
      * @param   item        Item
      * @return  Itself
@@ -119,7 +115,7 @@ public class PaginatedMadGui
                 .addAllClickTypes()
                 .setClickAction((Player player, MadGui gui, ItemStack i, int slot) -> {
                     if (!(gui instanceof PaginatedMadGui paginatedGui)) {
-                        return;
+                        throw new IllegalStateException("GUI must be a PaginatedMadGui to use this item.");
                     }
 
                     final int pageIndex = paginatedGui.getCurrentPageIndex() + 1;

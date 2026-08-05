@@ -7,6 +7,7 @@ import java.util.UUID;
 import fr.shuvly.paper.madgui.handler.destroy.DestroyHandler;
 import fr.shuvly.paper.madgui.handler.hold.HoldHandler;
 import fr.shuvly.paper.madgui.handler.hit.HitHandler;
+import fr.shuvly.paper.madgui.manager.MadItemRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -34,7 +35,7 @@ public class MadItem
 	private List<HitHandler> hitHandlers;
 	private List<DestroyHandler> destroyHandlers;
 
-	
+
 	/**
 	 * Creates a new MadItem.
 	 * 
@@ -137,6 +138,35 @@ public class MadItem
 			this.itemStack.setItemMeta(this.itemMeta);
 		}
 		return id;
+	}
+
+	/**
+	 * Registers all attached handlers (Click, Hit, Interact, Destroy, Hold)
+	 * into the global static registry using this item's ID.
+	 *
+	 * @return	Itself
+	 */
+	public MadItem registerGlobalHandlers()
+	{
+		final String id = this.getActionId(); // Ensure ID is generated/fetched
+		
+		if (this.clickHandlers != null) {
+			this.clickHandlers.forEach(h -> MadItemRegistry.registerClickAction(id, h));
+		}
+		if (this.hitHandlers != null) {
+			this.hitHandlers.forEach(h -> MadItemRegistry.registerHitAction(id, h));
+		}
+		if (this.interactHandlers != null) {
+			this.interactHandlers.forEach(h -> MadItemRegistry.registerInteractAction(id, h));
+		}
+		if (this.destroyHandlers != null) {
+			this.destroyHandlers.forEach(h -> MadItemRegistry.registerDestroyAction(id, h));
+		}
+		if (this.holdHandlers != null) {
+			this.holdHandlers.forEach(h -> MadItemRegistry.registerHoldAction(id, h));
+		}
+
+		return this;
 	}
 
 	/**
@@ -249,6 +279,20 @@ public class MadItem
 
 		((Damageable) meta).setDamage(item.getType().getMaxDurability() - durability);
 		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Sets item's data.
+	 * (Obsolete in modern Paper versions)
+	 *
+	 * @param	data	Item data.
+	 * @return	Itself
+	 * @deprecated
+	 */
+	@Deprecated
+	public MadItem setData(Byte data)
+	{
+		return this;
 	}
 
 	/**

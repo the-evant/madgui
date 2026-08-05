@@ -1,5 +1,6 @@
 package fr.shuvly.paper.madgui.manager;
 
+import fr.shuvly.paper.madgui.handler.click.ClickHandler;
 import fr.shuvly.paper.madgui.handler.destroy.DestroyHandler;
 import fr.shuvly.paper.madgui.handler.hit.HitHandler;
 import fr.shuvly.paper.madgui.handler.hold.HoldHandler;
@@ -13,10 +14,14 @@ import java.util.Map;
 public class MadItemRegistry
 {
 
+    private static final Map<String, List<ClickHandler>> clickHandlers = new HashMap<>();
     private static final Map<String, List<HitHandler>> hitHandlers = new HashMap<>();
     private static final Map<String, List<DestroyHandler>> destroyHandlers = new HashMap<>();
     private static final Map<String, List<HoldHandler>> holdHandlers = new HashMap<>();
     private static final Map<String, List<InteractHandler>> interactHandlers = new HashMap<>();
+
+    public static void registerClickAction(String id, ClickHandler handler) { clickHandlers.computeIfAbsent(id, k -> new ArrayList<>()).add(handler); }
+    public static List<ClickHandler> getClickHandlers(String id) { return clickHandlers.get(id); }
 
     public static void registerHitAction(String id, HitHandler handler) { hitHandlers.computeIfAbsent(id, k -> new ArrayList<>()).add(handler); }
     public static List<HitHandler> getHitHandlers(String id) { return hitHandlers.get(id); }

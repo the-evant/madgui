@@ -52,10 +52,8 @@ public class HoldListener
                 !armorPiece.hasItemMeta()) {
                 continue;
             }
-            
-            String actionId = MadItem.getActionId(armorPiece);
-            boolean hasHandlers = actionId != null && MadItemRegistry.getHoldHandlers(actionId) != null;
-            this.processHold(player, armorPiece, hasHandlers);
+
+            this.processHold(player, armorPiece, true);
         }
     }
 

@@ -17,7 +17,8 @@ import fr.shuvly.paper.madgui.handler.click.ClickHandler;
 
 import java.util.List;
 
-public class ClickListener implements Listener
+public class ClickListener
+	implements Listener
 {
 	
 	@EventHandler(ignoreCancelled = true)
@@ -55,6 +56,7 @@ public class ClickListener implements Listener
 
 				if (handler != null && handler.getClickTypes().contains(clickType)) {
 					handler.getClickAction().execute(player, gui, item, slot);
+					player.updateInventory();
 					event.setCancelled(true);
 				} else if (gui.areItemsLockedIn()) {
 					event.setCancelled(true);
@@ -90,6 +92,7 @@ public class ClickListener implements Listener
 			for (ClickHandler handler : handlers) {
 				if (handler.getClickTypes().contains(event.getClick())) {
 					handler.getClickAction().execute(player, null, clicked, event.getSlot());
+					player.updateInventory();
 					event.setCancelled(true);
 				}
 			}

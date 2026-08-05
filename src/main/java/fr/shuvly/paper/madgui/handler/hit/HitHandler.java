@@ -4,16 +4,7 @@ public class HitHandler
 {
 
 	private HitAction hitAction;
-	private boolean isOnlyKill;
-
-
-	/**
-	 * Creates an empty instance of HitHandler.
-	 */
-	public HitHandler()
-	{
-		this.isOnlyKill = false;
-	}
+	private boolean isOnlyKill = false;
 
 
 	/**

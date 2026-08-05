@@ -2,7 +2,7 @@ package fr.shuvly.paper.maditem;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-import fr.shuvly.paper.maditem.common.DefaultItems;
+import fr.shuvly.paper.maditem.common.DefaultItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +10,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
 
-public class MadSkull extends MadItem
+public class MadSkull
+    extends MadItem
 {
 
     /**
@@ -85,7 +86,7 @@ public class MadSkull extends MadItem
             
             return this;
         } catch (Exception exception) {
-            return DefaultItems.ITEM_BUILD_FAIL.getItem();
+            return DefaultItem.ITEM_BUILD_FAIL.getItem();
         }
     }
 

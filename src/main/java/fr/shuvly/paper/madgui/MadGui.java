@@ -1,5 +1,6 @@
 package fr.shuvly.paper.madgui;
 
+import fr.shuvly.paper.madgui.handler.click.ClickHandler;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,6 +11,8 @@ import org.bukkit.inventory.ItemStack;
 
 import fr.shuvly.paper.maditem.MadItem;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class MadGui
@@ -21,6 +24,7 @@ public class MadGui
 	private final int size;
 	private final Component title;
 	private final boolean areItemsLockedIn;
+	private final Map<Integer, ClickHandler> slotActions = new HashMap<>();
 
 
 	/**
@@ -70,7 +74,7 @@ public class MadGui
 
 	/**
 	 * Creates a new instance of MadGui from an existing Inventory.
-	 * TODO(l.81): Try to get the inventory's title.
+	 * todo(l.85): Try to get the inventory's title.
 	 *
 	 * @param	inventory	Inventory
 	 * @param 	areItemsLockedIn	Are items present in the gui locked inside the inventory?
@@ -128,16 +132,36 @@ public class MadGui
 		return this;
 	}
 
+	public MadGui addItem(ItemStack item, ClickHandler handler)
+	{
+		int slot = this.gui.firstEmpty();
+
+		if (slot != -1) {
+			this.gui.setItem(slot, item);
+
+			if (handler != null) {
+				this.slotActions.put(slot, handler);
+			}
+		}
+
+		return this;
+	}
+
 	/**
-	 * Adds an item in the GUI to the first free slot
-	 * and registers its handlers (if any exists).
+	 * Adds an item in the GUI to the first free slot.
 	 *
 	 * @param	item	Item to add
 	 * @return	Itself
 	 */
 	public MadGui addItem(MadItem item)
 	{
-		return this.addItem(item.getItemStack());
+		ClickHandler handler = null;
+
+		if (item.getClickHandlers() != null && !item.getClickHandlers().isEmpty()) {
+			handler = item.getClickHandlers().getFirst();
+		}
+
+		return this.addItem(item.getItemStack(), handler);
 	}
 
 	/**
@@ -152,10 +176,20 @@ public class MadGui
 		this.gui.setItem(index, item);
 		return this;
 	}
+
+	public MadGui setItem(int index, ItemStack item, ClickHandler handler)
+	{
+		this.gui.setItem(index, item);
+
+		if (handler != null) {
+			this.slotActions.put(index, handler);
+		}
+
+		return this;
+	}
 	
 	/**
-	 * Sets an item in the GUI at a given index
-	 * and registers its handlers (if any exists).
+	 * Sets an item in the GUI at a given index.
 	 * 
 	 * @param	index	Slot index
 	 * @param	item	Item to add
@@ -163,7 +197,17 @@ public class MadGui
 	 */
 	public MadGui setItem(int index, MadItem item)
 	{
-		return this.setItem(index, item.getItemStack());
+		ClickHandler handler = null;
+
+		if (item.getClickHandlers() != null && !item.getClickHandlers().isEmpty()) {
+			handler = item.getClickHandlers().getFirst();
+		}
+
+		return this.setItem(index, item.getItemStack(), handler);
+	}
+	
+	public ClickHandler getSlotAction(int slot) {
+		return this.slotActions.get(slot);
 	}
 	
 	/**
@@ -180,7 +224,7 @@ public class MadGui
 
 	/**
 	 * Replaces every item of a certain name by another item.
-	 * FIXME: You may want to perform further checks, not only the name.
+	 * fixme: You may want to perform further checks, not only the name.
 	 *
 	 * @param	toReplace		Name of the item to replace
 	 * @param	toReplaceWith	Replacing item

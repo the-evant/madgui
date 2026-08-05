@@ -21,7 +21,7 @@ public class Page
     public Page(PaginatedMadGui parent)
     {
         this.parent = parent;
-        this.items = new HashMap<Integer, MadItem>();
+        this.items = new HashMap<>();
     }
 
 
@@ -46,7 +46,7 @@ public class Page
     public void setItem(int slot, MadItem item)
         throws IllegalArgumentException
     {
-        if (this.isItemInParentGui(slot)) {
+        if (isItemInParentGui(slot)) {
             throw new IllegalArgumentException("Item can't be placed at the slot " + slot + ".");
         }
         this.items.put(slot, item);
@@ -65,6 +65,7 @@ public class Page
             if (this.isItemInParentGui(k) || this.items.containsKey(k)) {
                 continue;
             }
+
             this.items.put(k, item);
             return;
         }

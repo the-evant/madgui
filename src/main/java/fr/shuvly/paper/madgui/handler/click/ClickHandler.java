@@ -23,7 +23,7 @@ public class ClickHandler
 	public ClickHandler addClickType(ClickType clickType)
 	{
 		if (this.clickTypes == null) {
-			this.clickTypes = new ArrayList<ClickType>();
+			this.clickTypes = new ArrayList<>();
 		}
 		if (!this.clickTypes.contains(clickType)) {
 			this.clickTypes.add(clickType);
@@ -82,7 +82,7 @@ public class ClickHandler
 	public ClickHandler addGuiToWhitelist(Component guiTitle)
 	{
 		if (this.parentGuiWhitelist == null) {
-			this.parentGuiWhitelist = new ArrayList<Component>();
+			this.parentGuiWhitelist = new ArrayList<>();
 		}
 		this.parentGuiWhitelist.add(guiTitle);
 		return this;
@@ -97,7 +97,7 @@ public class ClickHandler
 	public ClickHandler addGuisToWhitelist(List<Component> guisTitle)
 	{
 		if (this.parentGuiWhitelist == null) {
-			this.parentGuiWhitelist = new ArrayList<Component>();
+			this.parentGuiWhitelist = new ArrayList<>();
 		}
 		this.parentGuiWhitelist.addAll(guisTitle);
 		return this;

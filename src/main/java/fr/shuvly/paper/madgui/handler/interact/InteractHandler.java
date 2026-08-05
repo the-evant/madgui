@@ -12,12 +12,6 @@ public class InteractHandler
 
 
 	/**
-	 * Creates an empty instance of InteractHandler.
-	 */
-	public InteractHandler() {}
-	
-	
-	/**
 	 * Adds an interact type to the handler.
 	 * 
 	 * @param	interactType	Interact type
@@ -26,7 +20,7 @@ public class InteractHandler
 	public InteractHandler addInteractType(Action interactType)
 	{
 		if (this.interactTypes == null) {
-			this.interactTypes = new ArrayList<Action>();
+			this.interactTypes = new ArrayList<>();
 		}
 		if (!this.interactTypes.contains(interactType)) {
 			this.interactTypes.add(interactType);

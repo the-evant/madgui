@@ -1,6 +1,8 @@
 package fr.shuvly.paper.madgui.listener;
 
-import fr.shuvly.paper.madgui.handler.hold.HoldManager;
+import fr.shuvly.paper.madgui.handler.hold.HoldHandler;
+import fr.shuvly.paper.madgui.manager.MadItemRegistry;
+import fr.shuvly.paper.maditem.MadItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,28 +10,55 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
-public class HoldListener implements Listener
+import java.util.List;
+
+public class HoldListener
+    implements Listener
 {
 
-    private final HoldManager holdManager;
-
-
-    /**
-     * Creates a new instance of HoldListener, with
-     * a hold manager for hold handling.
-     *
-     * @param   holdManager Hold manager
-     */
-    public HoldListener(HoldManager holdManager)
+    public void processHold(Player player, ItemStack item, boolean activeItem)
     {
-        this.holdManager = holdManager;
+        final String actionId = MadItem.getActionId(item);
+
+        if (actionId == null) {
+            return;
+        }
+
+        final int slot = player.getInventory().getHeldItemSlot();
+        final List<HoldHandler> holdHandlers = MadItemRegistry.getHoldHandlers(actionId);
+
+        if (holdHandlers == null || holdHandlers.isEmpty()) {
+            return;
+        }
+
+        if (activeItem) {
+            holdHandlers.forEach((HoldHandler handler) ->
+                handler.getHoldAction().execute(player, item, slot));
+        } else {
+            holdHandlers.forEach((HoldHandler handler) ->
+                handler.getNotHoldAction().execute(player, item, slot));
+        }
     }
 
+    public void refreshArmorState(Player player)
+    {
+        final PlayerInventory inventory = player.getInventory();
 
-    /**
-     * Hold handling.
-     */
+        for (ItemStack armorPiece : inventory.getArmorContents()) {
+            if (armorPiece == null ||
+                armorPiece.getType() == Material.AIR ||
+                !armorPiece.hasItemMeta()) {
+                continue;
+            }
+            
+            String actionId = MadItem.getActionId(armorPiece);
+            boolean hasHandlers = actionId != null && MadItemRegistry.getHoldHandlers(actionId) != null;
+            this.processHold(player, armorPiece, hasHandlers);
+        }
+    }
+
     @EventHandler
     public void onInteract(PlayerItemHeldEvent event)
     {
@@ -38,17 +67,14 @@ public class HoldListener implements Listener
         final ItemStack previousItem = player.getInventory().getItem(event.getPreviousSlot());
 
         if (item != null && item.getType() != Material.AIR) {
-            this.holdManager.processHold(player, item, true);
+            this.processHold(player, item, true);
         }
 
         if (previousItem != null && previousItem.getType() != Material.AIR) {
-            this.holdManager.processHold(player, previousItem, false);
+            this.processHold(player, previousItem, false);
         }
     }
 
-    /**
-     * If player drops the held item, then execute Not Hold action.
-     */
     @EventHandler
     public void onDrop(PlayerDropItemEvent event)
     {
@@ -59,7 +85,6 @@ public class HoldListener implements Listener
             return;
         }
 
-        this.holdManager.processHold(player, item, false);
+        this.processHold(player, item, false);
     }
-
 }

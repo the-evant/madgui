@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import fr.shuvly.paper.maditem.MadItem;
-import fr.shuvly.paper.maditem.common.DefaultItems;
+import fr.shuvly.paper.maditem.common.DefaultItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -40,8 +40,8 @@ public class Mask
 	public Mask(MadGui gui)
 	{
 		this.gui = gui;
-		this.items = new HashMap<Character, MadItem>();
-		this.pattern = new ArrayList<String>();
+		this.items = new HashMap<>();
+		this.pattern = new ArrayList<>();
 		
 		for (int k = 0; k < this.gui.getSize(); k++) {
 			this.pattern.add(null);
@@ -168,7 +168,7 @@ public class Mask
 					guiIndex,
 					this.items.getOrDefault(
 						iteratedPatternChar,
-						DefaultItems.ITEM_NOT_FOUND.getItem()
+						DefaultItem.ITEM_NOT_FOUND.getItem()
 					)
 				);
 	        }

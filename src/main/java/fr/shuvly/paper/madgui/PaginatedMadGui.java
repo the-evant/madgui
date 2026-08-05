@@ -1,7 +1,6 @@
 package fr.shuvly.paper.madgui;
 
 import fr.shuvly.paper.madgui.handler.click.ClickHandler;
-import fr.shuvly.paper.madgui.manager.MadGuiManager;
 import fr.shuvly.paper.madgui.page.Page;
 import fr.shuvly.paper.maditem.MadItem;
 import net.kyori.adventure.text.Component;
@@ -13,44 +12,39 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaginatedMadGui extends MadGui
+public class PaginatedMadGui
+    extends MadGui
 {
 
-    private List<Page> pages;
+    private final List<Page> pages;
     private List<Integer> freeSlotIndexes;
     private int currentPageIndex;
 
-    private final MadGuiManager guiManager;
 
+	/**
+	 * Creates a new GUI.
+	 *
+	 * @param	title		GUI's title
+	 * @param	size		GUI's amount of lines (must be between 1 and 6)
+	 */
+	public PaginatedMadGui(Component title, int size)
+	{
+		super(title, size);
+		this.pages = new ArrayList<>();
+		this.setup();
+	}
 
-    /**
-     * Creates a new Paginated GUI.
-     *
-     * @param	title	    GUI's title
-     * @param	size	    GUI's amount of lines (must be between 1 and 6).
-     * @param   guiManager  GUI manager
-     */
-    public PaginatedMadGui(Component title, int size, MadGuiManager guiManager)
-    {
-        super(title, size);
-
-        this.guiManager = guiManager;
-        this.setup();
-    }
-
-    /**
-     * Creates a new Paginated GUI from an existing Inventory.
-     *
-     * @param	inventory	Inventory
-     * @param   guiManager  Gui manager
-     */
-    public PaginatedMadGui(Inventory inventory, MadGuiManager guiManager)
-    {
-        super(inventory);
-
-        this.guiManager = guiManager;
-        this.setup();
-    }
+	/**
+	 * Creates a new instance of PaginatedMadGui from an existing Inventory.
+	 *
+	 * @param	inventory	Inventory
+	 */
+	public PaginatedMadGui(Inventory inventory)
+	{
+		super(inventory);
+		this.pages = new ArrayList<>();
+		this.setup();
+	}
 
 
     /**
@@ -58,7 +52,6 @@ public class PaginatedMadGui extends MadGui
      */
     private void setup()
     {
-        this.pages = new ArrayList<>();
         this.createNewPage();
         this.setCurrentPageIndex(0);
     }
@@ -81,7 +74,7 @@ public class PaginatedMadGui extends MadGui
 
     /**
      * Sets the item as the previous page button.
-     * FIXME: In the click action, if gui is not an instance of
+     * fixme: In the click action, if gui is not an instance of
      *        PaginatedMadGui, we may want to throw an error.
      *
      * @param   item        Item
@@ -107,13 +100,13 @@ public class PaginatedMadGui extends MadGui
                 })
         );
 
-        item.build(this, this.guiManager);
+        item.build();
         return this;
     }
 
     /**
      * Sets the item as the next page button.
-     * FIXME: In the click action, if gui is not an instance of
+     * fixme: In the click action, if gui is not an instance of
      *        PaginatedMadGui, we may want to throw an error.
      *
      * @param   item        Item
@@ -139,7 +132,7 @@ public class PaginatedMadGui extends MadGui
                 })
         );
 
-        item.build(this, this.guiManager);
+        item.build();
         return this;
     }
 

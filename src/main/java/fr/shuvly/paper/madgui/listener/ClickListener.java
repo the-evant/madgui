@@ -1,8 +1,5 @@
 package fr.shuvly.paper.madgui.listener;
 
-import java.util.List;
-
-import fr.shuvly.paper.maditem.MadItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,67 +13,11 @@ import org.bukkit.inventory.ItemStack;
 
 import fr.shuvly.paper.madgui.MadGui;
 import fr.shuvly.paper.madgui.handler.click.ClickHandler;
-import fr.shuvly.paper.madgui.handler.click.ClickManager;
 
 public class ClickListener
 	implements Listener
 {
 	
-	private final ClickManager clickManager;
-	
-	
-	/**
-	 * Creates a new instance of MadGuiClickListener, with
-	 * a click manager for click handling.
-	 * 
-	 * @param	clickManager	Click manager
-	 */
-	public ClickListener(ClickManager clickManager)
-	{
-		this.clickManager = clickManager;
-	}
-
-
-	/**
-	 * Executes the click actions linked to the clicked item.
-	 *
-	 * @param	player		Player
-	 * @param	clickType	Click type
-	 * @param	gui			GUI
-	 * @param	item		Item
-	 * @param	slot		Slot
-	 */
-	private boolean processClick(
-		Player player,
-		ClickType clickType,
-		MadGui gui,
-		ItemStack item,
-		int slot
-	)
-	{
-		final String actionId = MadItem.getActionId(item);
-		if (actionId == null) {
-			return false;
-		}
-		final List<ClickHandler> handlers = this.clickManager.getHandlers().get(actionId);
-
-		if (handlers == null) {
-			return false;
-		}
-
-		handlers.stream()
-			.filter((ClickHandler handler) -> {
-				if (handler.isWhitelistOn() && !handler.isGuiInWhitelist(gui.getTitle())) {
-					return false;
-				}
-				return handler.getClickTypes().contains(clickType);
-			})
-			.forEach((ClickHandler handler) ->
-				handler.getClickAction().execute(player, gui, item, slot));
-
-		return true;
-	}
-
 	/**
 	 * Click handling.
 	 */
@@ -93,21 +34,21 @@ public class ClickListener
 		final Inventory inventory = event.getClickedInventory();
 		final InventoryHolder holder = inventory.getHolder();
 
+		if (!(holder instanceof MadGui gui)) {
+			return;
+		}
+
         final ClickType clickType = event.getClick();
 		final ItemStack item = event.getCurrentItem();
 		final int slot = event.getSlot();
 
-		final MadGui gui = holder instanceof MadGui
-			? (MadGui) holder
-			: new MadGui(inventory);
-
-		if (item == null || item.getType() == Material.AIR) {
-			return;
+		ClickHandler handler = gui.getSlotAction(slot);
+		if (handler != null && handler.getClickTypes().contains(clickType)) {
+			handler.getClickAction().execute(player, gui, item, slot);
+			event.setCancelled(true);
+		} else if (gui.areItemsLockedIn()) {
+			event.setCancelled(true);
 		}
-
-		final boolean cancelEvent = this.processClick(player, clickType, gui, item, slot);
-
-		event.setCancelled(cancelEvent);
 	}
 
 	/**

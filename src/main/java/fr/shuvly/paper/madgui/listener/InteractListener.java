@@ -3,6 +3,7 @@ package fr.shuvly.paper.madgui.listener;
 import java.util.List;
 
 import fr.shuvly.paper.maditem.MadItem;
+import fr.shuvly.paper.madgui.manager.MadItemRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,35 +11,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import fr.shuvly.paper.madgui.handler.interact.InteractionManager;
 import fr.shuvly.paper.madgui.handler.interact.InteractHandler;
 
 public class InteractListener
 	implements Listener
 {
-	
-	private final InteractionManager interactManager;
-	
-	
-	/**
-	 * Creates a new instance of InteractListener, with
-	 * an interact manager for interact handling.
-	 * 
-	 * @param	interactManager	Interact manager
-	 */
-	public InteractListener(InteractionManager interactManager)
-	{
-		this.interactManager = interactManager;
-	}
 
-
-	/**
-	 * Executes the interaction actions linked to the interacted item.
-	 *
-	 * @param	player			Player
-	 * @param	interactType	Interaction type
-	 * @param	item			Item
-	 */
 	private boolean processInteraction(
 		Player player,
 		Action interactType,
@@ -46,11 +24,13 @@ public class InteractListener
 	)
 	{
 		final String actionId = MadItem.getActionId(item);
+
 		if (actionId == null) {
 			return false;
 		}
+		
 		final int slot = player.getInventory().getHeldItemSlot();
-		final List<InteractHandler> interactHandlers = this.interactManager.getHandlers().get(actionId);
+		final List<InteractHandler> interactHandlers = MadItemRegistry.getInteractHandlers(actionId);
 
 		if (interactHandlers == null || interactHandlers.isEmpty()) {
 			return false;
@@ -65,9 +45,6 @@ public class InteractListener
 		return true;
 	}
 
-	/**
-	 * Interact handling.
-	 */
 	@EventHandler
 	public void onInteract(PlayerInteractEvent event)
 	{

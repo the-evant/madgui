@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import fr.shuvly.paper.madgui.MadGui;
 import fr.shuvly.paper.madgui.handler.destroy.DestroyHandler;
 import fr.shuvly.paper.madgui.handler.hold.HoldHandler;
 import fr.shuvly.paper.madgui.handler.hit.HitHandler;
@@ -18,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import fr.shuvly.paper.madgui.manager.MadGuiManager;
 import fr.shuvly.paper.madgui.handler.click.ClickHandler;
 import fr.shuvly.paper.madgui.handler.interact.InteractHandler;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -89,14 +87,13 @@ public class MadItem
 
 
 	/**
-	 * Creates a Separator, a Stained Glass Pane of a certain color
+	 * Creates a new stained glass pane with no name,
 	 * that does nothing, just for decoration.
 	 *
 	 * @param	glass		Stained Glass Pane color
-	 * @param	guiManager	Gui manager
 	 * @return	Created MadItem
 	 */
-	public static MadItem separator(Material glass, MadGuiManager guiManager)
+	public static MadItem separator(Material glass)
 	{
 		Material mat = glass;
 
@@ -107,7 +104,7 @@ public class MadItem
 		return new MadItem(mat, 1)
 			.setName(Component.text(""))
 			.setUntakable(true)
-			.build(guiManager);
+			.build();
 	}
 
 	public static String getActionId(ItemStack item)
@@ -142,57 +139,6 @@ public class MadItem
 		return id;
 	}
 
-	/**
-	 * Builds the item and registers its handlers.
-	 *
-	 * @param	guiManager	GUI Manager
-	 * @return	Itself
-	 */
-	public MadItem build(MadGuiManager guiManager)
-	{
-		this.getActionId();
-		this.itemStack.setItemMeta(this.itemMeta);
-		
-		guiManager.getClickManager().addItemHandlers(this);
-		guiManager.getInteractionManager().addItemHandlers(this);
-		guiManager.getHoldManager().addItemHandlers(this);
-		guiManager.getHitManager().addItemHandlers(this);
-		guiManager.getDestroyManager().addItemHandlers(this);
-		return this;
-	}
-
-	/**
-	 * Builds the item and registers its handlers, only for
-	 * a certain GUI title (mainly the parent gui of the item).
-	 *
-	 * @param	guiTitle	GUI title
-	 * @param	guiManager	GUI Manager
-	 * @return	Itself
-	 */
-	public MadItem build(Component guiTitle, MadGuiManager guiManager)
-	{
-		if (this.clickHandlers != null) {
-			for (ClickHandler handler : this.clickHandlers) {
-				handler.addGuiToWhitelist(guiTitle);
-			}
-		}
-
-		return this.build(guiManager);
-	}
-
-	/**
-	 * Builds the item and registers its handlers, only for
-	 * a certain GUI (mainly the parent gui of the item).
-	 *
-	 * @param	gui		GUI
-	 * @param	guiManager	GUI Manager
-	 * @return	Itself
-	 */
-	public MadItem build(MadGui gui, MadGuiManager guiManager)
-	{
-		return this.build(gui.getTitle(), guiManager);
-	}
-	
 	/**
 	 * Builds the item, without registering its handlers.
 	 * 
@@ -334,7 +280,6 @@ public class MadItem
 	 * 
 	 * @param	line	Lore line.
 	 * @return	Itself
-	 * @apiNote Handles line breaks ! (<code>>br/<</code>)
 	 */
 	public MadItem addLore(Component line)
 	{

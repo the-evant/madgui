@@ -10,7 +10,7 @@ public class ClickHandler
 {
 
 	private List<Component> parentGuiWhitelist;
-	private ArrayList<ClickType> clickTypes;
+	private List<ClickType> clickTypes;
 	private ClickAction clickAction;
 
 
@@ -118,7 +118,7 @@ public class ClickHandler
 	/**
 	 * @return	Assigned click types
 	 */
-	public ArrayList<ClickType> getClickTypes()
+	public List<ClickType> getClickTypes()
 	{
 		return this.clickTypes;
 	}

@@ -3,7 +3,7 @@
 Library that lets you create customized GUIs and items quickly and easily.
 
 This library has two main classes:
-* **HashItem:** Item builder
+* **MadItem:** Item builder
 * **HashGui:** GUI builder
 
 [🇫🇷 Egalement disponible en Français !](https://github.com/hashtek-mc/hashgui/blob/main/README.md)
@@ -24,14 +24,14 @@ After installation, the .jar file is located in the `builds/libs/` folder.
 .\gradlew.bat make
 ```
 
-## HashItem
+## MadItem
 
 ### Usage
 
 **Custom item creation:**
 
 ```java
-HashItem item = new HashItem(Material.ENDER_PEARL, 10)
+MadItem item = new MadItem(Material.ENDER_PEARL, 10)
   .setName("Hi")
   .setLore(Arrays.asList(
     "Line 1",
@@ -88,7 +88,7 @@ ClickHandler clickHandler = new ClickHandler()
         // Actions to perform on click.
     });
 
-HashItem item = new HashItem(Material.COMPASS)
+MadItem item = new MadItem(Material.COMPASS)
     .addClickHandler(clickHandler);
     .build(guiManager);
 ```
@@ -184,7 +184,7 @@ You can define the action executed when a player breaks a block with an item.
 
 ### HashGuiManager
 
-In order to make handlers working, you need to create an instance of `HashGuiManager` at the root
+In order to make handlers working, you need to create an instance of `MadGuiManager` at the root
 of your plugin and give this instance to your custom item build.
 
 **Example:**
@@ -230,18 +230,18 @@ public class Test extends JavaPlugin {
 
 **Creation of a player's skull:**
 ```java
-HashItem playerSkull = new HashSkull()
+MadItem playerSkull = new HashSkull()
     .setOwner("Shuvly") // HashSkull
-    .setName("Shuvly's head") // HashItem
+    .setName("Shuvly's head") // MadItem
     .build();
 ```
 
 > [!TIP]
-> Make all changes to `HashSkull` first before making changes to `HashItem`.
+> Make all changes to `MadSkull` first before making changes to `MadItem`.
 
 **Creation of a custom skull:**
 ```java
-HashItem customSkull = new HashSkull()
+MadItem customSkull = new HashSkull()
     .setTexture("...") // Your texture here
     .setName("Custom head")
     .build();
@@ -250,7 +250,7 @@ HashItem customSkull = new HashSkull()
 Texture example (in `base64`): `eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWY0OGMxOTU1NTUwZWFlZGU1NzEzYTdiY2NjOWE0YWUyZTZlMTcxZTI5YWMxYzcxYzBlM2QxYWJiNzI5MGNjYSJ9fX0=`
 
 > [!TIP]
-> Make all changes to `HashSkull` first before making changes to `HashItem`.
+> Make all changes to `MadSkull` first before making changes to `MadItem`.
 
 > [!TIP]
 > You can find custom skulls on [Minecraft Heads](https://minecraft-heads.com/).\
@@ -262,7 +262,7 @@ When you're on the head page, scroll down to the "For developers" section to fin
 
 **GUI creation:**
 ```java
-HashItem item = new HashItem(Material.SIGN)
+MadItem item = new MadItem(Material.SIGN)
   .setName("Settings")
   .addLore("Right click to access parameters")
   .build();
@@ -343,7 +343,7 @@ If a letter has no assigned item, this one will be used:
 
 ## PaginatedHashGui
 
-`PaginatedHashGui` is a `HashGui` with a pagination system.
+`PaginatedMadGui` is a `MadGui` with a pagination system.
 
 ### Usage
 
@@ -353,10 +353,10 @@ int linesAmount = 6;
 
 PaginatedHashGui gui = new PaginatedHashGui(title, linesAmount, guiManager); // guiManager must be an instance of HashGuiManager.
 
-HashItem previousPage = new HashItem(Material.ARROW)
+MadItem previousPage = new MadItem(Material.ARROW)
     .setName("Previous page");
 
-HashItem nextPage = new HashItem(Material.ARROW)
+MadItem nextPage = new MadItem(Material.ARROW)
     .setName("Next page");
 
 gui.setPreviousPageItem(previousPage); // When clicking on previousPage, the GUI will refresh to the previous page.
@@ -365,8 +365,8 @@ gui.setNextPageItem(nextPage); // When clicking on previousPage, the GUI will re
 
 #### Features
 
-* `setPreviousPageItem(HashItem item)` : Refreshes the GUI to the previous page (if possible)
-* `setNextPageItem(HashItem item)` : Refreshes the GUI to the next page (if possible)
+* `setPreviousPageItem(MadItem item)` : Refreshes the GUI to the previous page (if possible)
+* `setNextPageItem(MadItem item)` : Refreshes the GUI to the next page (if possible)
 * `update(Player player)` : Refreshes the GUI (for the pages)
 * `clearPageContent()` : Visually clears current page (used for refreshing)
 * `addPage(Page page)` : Adds a new page
@@ -389,21 +389,21 @@ gui.addPage(page); // Adds it to the GUI
 ```
 
 #### Features
-* `addItem(HashItem item)` : Adds an item in the page at the first free slot
-* `setItem(int slot, HashItem item)` : Adds an item in the page at a specific slot
+* `addItem(MadItem item)` : Adds an item in the page at the first free slot
+* `setItem(int slot, MadItem item)` : Adds an item in the page at a specific slot
 * `removeItem(int slot)` : Removes the item linked to a slot
 * `clearItems()` : Clears page's items
 
 > [!TIP]
-> By default, at the creation of a `PaginatedHashGui`, a fresh new page will be automatically created and added.
+> By default, at the creation of a `PaginatedMadGui`, a fresh new page will be automatically created and added.
 
 #### Page management
 
 ```java
 Page page;
 
-HashItem item1 = new HashItem(Material.BED);
-HashItem item2 = new HashItem(Material.BEDROCK);
+MadItem item1 = new MadItem(Material.BED);
+MadItem item2 = new MadItem(Material.BEDROCK);
 
 page.addItem(item1);
 page.setItem(8, item2);

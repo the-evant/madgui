@@ -103,7 +103,7 @@ public class MadItem
 		}
 
 		return new MadItem(mat, 1)
-			.setName(Component.text(""))
+			.setHideTooltip(true)
 			.setUntakable(true)
 			.build();
 	}

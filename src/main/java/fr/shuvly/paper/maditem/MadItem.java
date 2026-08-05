@@ -210,16 +210,10 @@ public class MadItem
 	{
 		return this.itemStack;
 	}
-	
-	/**
-	 * Sets item's type.
-	 * 
-	 * @param	type	Item type.
-	 * @return	Itself
-	 */
-	public MadItem setType(Material type)
+
+	public MadItem setHideTooltip(boolean hideTooltip)
 	{
-		this.itemStack.setType(type);
+		this.itemMeta.setHideTooltip(hideTooltip);
 		return this;
 	}
 	
@@ -569,7 +563,7 @@ public class MadItem
 	public MadItem addHoldHandler(HoldHandler holdHandler)
 	{
 		if (this.holdHandlers == null) {
-			this.holdHandlers = new ArrayList<HoldHandler>();
+			this.holdHandlers = new ArrayList<>();
 		}
 		this.holdHandlers.add(holdHandler);
 		return this;

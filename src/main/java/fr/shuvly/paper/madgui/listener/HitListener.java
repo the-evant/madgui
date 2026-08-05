@@ -2,14 +2,13 @@ package fr.shuvly.paper.madgui.listener;
 
 import fr.shuvly.paper.madgui.handler.hit.HitManager;
 import fr.shuvly.paper.madgui.handler.hit.HitHandler;
-import net.kyori.adventure.text.Component;
+import fr.shuvly.paper.maditem.MadItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
@@ -54,9 +53,11 @@ public class HitListener
             return;
         }
 
-        final ItemMeta meta = item.getItemMeta();
-        final Component itemDisplayName = meta.displayName();
-        final List<HitHandler> hitHandlers = hitManager.getHandlers().get(itemDisplayName);
+        final String actionId = MadItem.getActionId(item);
+        if (actionId == null) {
+            return;
+        }
+        final List<HitHandler> hitHandlers = hitManager.getHandlers().get(actionId);
 
         if (hitHandlers == null || hitHandlers.isEmpty()) {
             return;

@@ -2,7 +2,7 @@ package fr.shuvly.paper.madgui.listener;
 
 import fr.shuvly.paper.madgui.handler.destroy.DestroyHandler;
 import fr.shuvly.paper.madgui.handler.destroy.DestroyManager;
-import net.kyori.adventure.text.Component;
+import fr.shuvly.paper.maditem.MadItem;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -10,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
@@ -46,9 +45,11 @@ public class DestroyListener
         Block destroyedBlock
     )
     {
-        final ItemMeta meta = itemUsed.getItemMeta();
-        final Component itemDisplayName = meta.displayName();
-        final List<DestroyHandler> destroyHandlers = this.destroyManager.getHandlers().get(itemDisplayName);
+        final String actionId = MadItem.getActionId(itemUsed);
+        if (actionId == null) {
+            return;
+        }
+        final List<DestroyHandler> destroyHandlers = this.destroyManager.getHandlers().get(actionId);
 
         if (destroyHandlers == null || destroyHandlers.isEmpty()) {
             return;

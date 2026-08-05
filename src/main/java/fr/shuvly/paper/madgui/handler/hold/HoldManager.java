@@ -2,12 +2,10 @@ package fr.shuvly.paper.madgui.handler.hold;
 
 import fr.shuvly.paper.madgui.manager.MadGuiAbstractManager;
 import fr.shuvly.paper.maditem.MadItem;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
@@ -23,10 +21,12 @@ public class HoldManager
      */
     public void processHold(Player player, ItemStack item, boolean activeItem)
     {
-        final ItemMeta meta = item.getItemMeta();
-        final Component itemDisplayName = meta.displayName();
+        final String actionId = MadItem.getActionId(item);
+        if (actionId == null) {
+            return;
+        }
         final int slot = player.getInventory().getHeldItemSlot();
-        final List<HoldHandler> holdHandlers = super.getHandlers().get(itemDisplayName);
+        final List<HoldHandler> holdHandlers = super.getHandlers().get(actionId);
 
         if (holdHandlers == null || holdHandlers.isEmpty()) {
             return;
@@ -60,7 +60,7 @@ public class HoldManager
             this.processHold(
                 player,
                 armorPiece,
-                super.getHandlers().containsKey(armorPiece.getItemMeta().displayName())
+                super.getHandlers().containsKey(MadItem.getActionId(armorPiece))
             );
         }
     }

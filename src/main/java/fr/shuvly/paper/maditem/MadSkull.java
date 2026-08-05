@@ -1,14 +1,13 @@
 package fr.shuvly.paper.maditem;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import fr.shuvly.paper.maditem.common.DefaultItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.Field;
 import java.util.UUID;
 
 public class MadSkull extends MadItem
@@ -71,14 +70,6 @@ public class MadSkull extends MadItem
         return this;
     }
 
-    /**
-     * Sets skull's texture to a custom texture.
-     * To set skull's texture to a player's head,
-     * use {@link MadSkull#setOwner(String)}.
-     *
-     * @param   texture     Skull texture
-     * @return  Itself
-     */
     public MadItem setTexture(String texture)
     {
         if (texture.isEmpty()) {
@@ -87,17 +78,13 @@ public class MadSkull extends MadItem
 
         try {
             final SkullMeta skullMeta = this.getSkullMeta();
-            final GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+            final PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
 
-            profile.getProperties().put("textures", new Property("textures", texture));
-
-            final Field profileField = skullMeta.getClass().getDeclaredField("profile");
-
-            profileField.setAccessible(true);
-            profileField.set(skullMeta, profile);
-
+            profile.setProperty(new ProfileProperty("textures", texture));
+            skullMeta.setPlayerProfile(profile);
+            
             return this;
-        } catch (NoSuchFieldException | IllegalAccessException exception) {
+        } catch (Exception exception) {
             return DefaultItems.ITEM_BUILD_FAIL.getItem();
         }
     }

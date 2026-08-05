@@ -2,7 +2,7 @@ package fr.shuvly.paper.madgui.listener;
 
 import java.util.List;
 
-import net.kyori.adventure.text.Component;
+import fr.shuvly.paper.maditem.MadItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,7 +13,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.shuvly.paper.madgui.MadGui;
 import fr.shuvly.paper.madgui.handler.click.ClickHandler;
@@ -55,9 +54,11 @@ public class ClickListener
 		int slot
 	)
 	{
-		final ItemMeta meta = item.getItemMeta();
-		final Component itemDisplayName = meta.displayName();
-		final List<ClickHandler> handlers = this.clickManager.getHandlers().get(itemDisplayName);
+		final String actionId = MadItem.getActionId(item);
+		if (actionId == null) {
+			return false;
+		}
+		final List<ClickHandler> handlers = this.clickManager.getHandlers().get(actionId);
 
 		if (handlers == null) {
 			return false;
@@ -120,18 +121,18 @@ public class ClickListener
 	{
 		final InventoryView view = event.getView();
 
-		if (!(view.getTopInventory().getHolder() instanceof MadGui gui) ||
-			view.getCursor() == null) {
+		if (!(view.getTopInventory().getHolder() instanceof MadGui gui)) {
 			return;
-		}
+		} else {
+            view.getCursor();
+        }
 
-		if (!gui.areItemsLockedIn()) {
+        if (!gui.areItemsLockedIn()) {
 			return;
 		}
 
 		if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY ||
-			event.getAction() == InventoryAction.HOTBAR_SWAP ||
-			event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD) {
+			event.getAction() == InventoryAction.HOTBAR_SWAP) {
 			event.setCancelled(true);
 		}
 	}

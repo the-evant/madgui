@@ -75,15 +75,15 @@ public class MadGuiManager
 	/**
 	 * Unregisters an item from the various managers.
 	 *
-	 * @param	itemName	Item's name
+	 * @param	itemId	Item's ID
 	 */
-	public void unregisterItem(Component itemName)
+	public void unregisterItem(String itemId)
 	{
-		this.clickManager.removeItemHandlers(itemName);
-		this.interactionManager.removeItemHandlers(itemName);
-		this.holdManager.removeItemHandlers(itemName);
-		this.hitManager.removeItemHandlers(itemName);
-		this.destroyManager.removeItemHandlers(itemName);
+		this.clickManager.removeItemHandlers(itemId);
+		this.interactionManager.removeItemHandlers(itemId);
+		this.holdManager.removeItemHandlers(itemId);
+		this.hitManager.removeItemHandlers(itemId);
+		this.destroyManager.removeItemHandlers(itemId);
 	}
 
 

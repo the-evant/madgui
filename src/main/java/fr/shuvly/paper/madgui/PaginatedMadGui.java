@@ -58,7 +58,7 @@ public class PaginatedMadGui extends MadGui
      */
     private void setup()
     {
-        this.pages = new ArrayList<Page>();
+        this.pages = new ArrayList<>();
         this.createNewPage();
         this.setCurrentPageIndex(0);
     }
@@ -68,7 +68,7 @@ public class PaginatedMadGui extends MadGui
      */
     private void findFreeSlotIndexes()
     {
-        this.freeSlotIndexes = new ArrayList<Integer>();
+        this.freeSlotIndexes = new ArrayList<>();
 
         for (int k = 0; k < super.getTotalSize(); k++) {
             final ItemStack item = super.getInventory().getItem(k);

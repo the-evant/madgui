@@ -2,16 +2,16 @@ package fr.shuvly.paper.maditem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import fr.shuvly.paper.madgui.MadGui;
 import fr.shuvly.paper.madgui.handler.destroy.DestroyHandler;
 import fr.shuvly.paper.madgui.handler.hold.HoldHandler;
 import fr.shuvly.paper.madgui.handler.hit.HitHandler;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +22,7 @@ import fr.shuvly.paper.madgui.manager.MadGuiManager;
 import fr.shuvly.paper.madgui.handler.click.ClickHandler;
 import fr.shuvly.paper.madgui.handler.interact.InteractHandler;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public class MadItem
 {
@@ -43,7 +44,7 @@ public class MadItem
 	 */
 	public MadItem(Material type)
 	{
-		this(type, 1, null);
+		this(type, 1);
 	}
 	
 	/**
@@ -54,30 +55,7 @@ public class MadItem
 	 */
 	public MadItem(Material type, int amount)
 	{
-		this(type, amount, null);
-	}
-	
-	/**
-	 * Creates a new MadItem.
-	 * 
-	 * @param	type	Material type
-	 * @param	data	Item's data
-	 */
-	public MadItem(Material type, Byte data)
-	{
-		this(type, 1, data);
-	}
-	
-	/**
-	 * Creates a new MadItem.
-	 * 
-	 * @param	type	Material type
-	 * @param	amount	Amount of items
-	 * @param	data	Item's data
-	 */
-	public MadItem(Material type, int amount, Byte data)
-	{
-		this.itemStack = new ItemStack(type, amount, data == null ? (byte) 0 : data);
+		this.itemStack = new ItemStack(type, amount);
 		this.itemMeta = this.itemStack.getItemMeta();
 	}
 
@@ -132,36 +110,36 @@ public class MadItem
 			.build(guiManager);
 	}
 
-	/**
-	 * Special triggers handling.
-	 * <ul>
-	 *     <li><code>\n</code>: Line break</li>
-	 * </ul>
-	 */
-	private void formatLore()
+	public static String getActionId(ItemStack item)
 	{
-		if (!this.itemMeta.hasLore()) {
-			return;
+		if (item == null || !item.hasItemMeta()) {
+			return null;
 		}
 
-		final List<Component> newLore = new ArrayList<Component>();
+		final NamespacedKey key = NamespacedKey.fromString("madgui:id");
 
-		for (Component line : this.itemMeta.lore()) {
-			if (!(line instanceof TextComponent l)) {
-				continue;
-			}
-			final String lineAsString = l.content();
-			String[] splittedLine = lineAsString.split("\\n");
+		if (key != null) {
+			return item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+		}
+		return null;
+	}
 
-			for (int k = 0; k < splittedLine.length; k++) {
-				if (k > 0) {
-					splittedLine[k] = ChatColor.getLastColors(splittedLine[k - 1]) + splittedLine[k];
-				}
-				newLore.add(Component.text(splittedLine[k]));
-			}
+	public String getActionId()
+	{
+		final NamespacedKey key = NamespacedKey.fromString("madgui:id");
+
+		if (key == null) {
+			return null;
 		}
 
-		this.itemMeta.lore(newLore);
+		String id = this.itemMeta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
+
+		if (id == null) {
+			id = UUID.randomUUID().toString();
+			this.itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, id);
+			this.itemStack.setItemMeta(this.itemMeta);
+		}
+		return id;
 	}
 
 	/**
@@ -172,7 +150,7 @@ public class MadItem
 	 */
 	public MadItem build(MadGuiManager guiManager)
 	{
-		this.formatLore();
+		this.getActionId();
 		this.itemStack.setItemMeta(this.itemMeta);
 		
 		guiManager.getClickManager().addItemHandlers(this);
@@ -222,7 +200,6 @@ public class MadItem
 	 */
 	public MadItem build()
 	{
-		this.formatLore();
 		this.itemStack.setItemMeta(this.itemMeta);
 		return this;
 	}
@@ -291,7 +268,6 @@ public class MadItem
 	public MadItem setDurability(int durability)
 	{
 		if (!(this.itemMeta instanceof Damageable)) {
-			/* System.err.println is used because HashLogger can't be. */
 			System.err.println(
 				"MadItem#setDurability: Called with an incompatible ItemMeta (not instance of Damageable).\n" +
 				"MadItem used: " + this
@@ -318,7 +294,6 @@ public class MadItem
 		final ItemMeta meta = item.getItemMeta();
 
 		if (!(meta instanceof Damageable)) {
-			/* System.err.println is used because HashLogger can't be. */
 			System.err.println(
 				"MadItem#setDurability: Called with an incompatible ItemMeta (not instance of Damageable).\n" +
 				"ItemStack used: " + item
@@ -328,20 +303,6 @@ public class MadItem
 
 		((Damageable) meta).setDamage(item.getType().getMaxDurability() - durability);
 		item.setItemMeta(meta);
-	}
-	
-	/**
-	 * Sets item's data.
-	 * TODO: Finish this function.
-	 *
-	 * @param	data	Item data.
-	 * @return	Itself
-	 * @deprecated
-	 */
-	@Deprecated
-	public MadItem setData(Byte data)
-	{
-		return this;
 	}
 
 	/**
@@ -379,7 +340,7 @@ public class MadItem
 	{
 		final List<Component> lore = this.itemMeta.hasLore()
 			? this.itemMeta.lore()
-			: new ArrayList<Component>();
+			: new ArrayList<>();
 
 		lore.add(line);
 
@@ -561,7 +522,7 @@ public class MadItem
 	public MadItem addClickHandler(ClickHandler clickHandler)
 	{
 		if (this.clickHandlers == null) {
-			this.clickHandlers = new ArrayList<ClickHandler>();
+			this.clickHandlers = new ArrayList<>();
 		}
 		this.clickHandlers.add(clickHandler);
 		return this;
@@ -591,7 +552,7 @@ public class MadItem
 	public MadItem addInteractHandler(InteractHandler interactHandler)
 	{
 		if (this.interactHandlers == null) {
-			this.interactHandlers = new ArrayList<InteractHandler>();
+			this.interactHandlers = new ArrayList<>();
 		}
 		this.interactHandlers.add(interactHandler);
 		return this;
@@ -647,7 +608,7 @@ public class MadItem
 	public MadItem addHitHandler(HitHandler hitHandler)
 	{
 		if (this.hitHandlers == null) {
-			this.hitHandlers = new ArrayList<HitHandler>();
+			this.hitHandlers = new ArrayList<>();
 		}
 		this.hitHandlers.add(hitHandler);
 		return this;
@@ -675,7 +636,7 @@ public class MadItem
 	public MadItem addDestroyHandler(DestroyHandler destroyHandler)
 	{
 		if (this.destroyHandlers == null) {
-			this.destroyHandlers = new ArrayList<DestroyHandler>();
+			this.destroyHandlers = new ArrayList<>();
 		}
 		this.destroyHandlers.add(destroyHandler);
 		return this;

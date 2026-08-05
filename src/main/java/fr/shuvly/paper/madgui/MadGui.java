@@ -12,7 +12,8 @@ import fr.shuvly.paper.maditem.MadItem;
 
 import java.util.Objects;
 
-public class MadGui implements InventoryHolder
+public class MadGui
+	implements InventoryHolder
 {
 
 	private final Inventory gui;

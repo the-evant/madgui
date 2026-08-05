@@ -2,14 +2,13 @@ package fr.shuvly.paper.madgui.listener;
 
 import java.util.List;
 
-import net.kyori.adventure.text.Component;
+import fr.shuvly.paper.maditem.MadItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.shuvly.paper.madgui.handler.interact.InteractionManager;
 import fr.shuvly.paper.madgui.handler.interact.InteractHandler;
@@ -46,10 +45,12 @@ public class InteractListener
 		ItemStack item
 	)
 	{
-		final ItemMeta meta = item.getItemMeta();
-		final Component itemDisplayName = meta.displayName();
+		final String actionId = MadItem.getActionId(item);
+		if (actionId == null) {
+			return false;
+		}
 		final int slot = player.getInventory().getHeldItemSlot();
-		final List<InteractHandler> interactHandlers = this.interactManager.getHandlers().get(itemDisplayName);
+		final List<InteractHandler> interactHandlers = this.interactManager.getHandlers().get(actionId);
 
 		if (interactHandlers == null || interactHandlers.isEmpty()) {
 			return false;
